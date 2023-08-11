@@ -1,38 +1,48 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Insert = () => {
-  const [mydata, setData] = useState();
-
-  const dataHandler = async () => {
-    try {
-      console.log("I am calling....");
-      const res = await axios.get(`${process.env.REACT_APP_API}/getstudents`);
-
-      if (res?.data) {
-        setData(res.data);
-        console.log(res);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [mydata, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    dataHandler();
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API}/api/v1/getStudents`
+        );
+
+        if (res?.data) {
+          setData(res.data.result);
+          console.log(res.data.result);
+        } else {
+          console.log("No data received.");
+        }
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
-    <>
-      <div>
-        {mydata && (
-          <div>
-            <div>GET DATA WORKING SUCCESSFULLY.......</div>
+    <div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : mydata.length > 0 ? (
+        mydata.map((student) => (
+          <div key={student.id}>
+            <p>Name: {student.name}</p>
+            <p>Age: {student.age}</p>
           </div>
-        )}
-      </div>
-    </>
+        ))
+      ) : (
+        <p>No data available</p>
+      )}
+    </div>
   );
 };
 
