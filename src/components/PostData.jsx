@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const PostData = () => {
   const [name, setName] = useState("");
-  const [age, setAge] = useState(0);
+  const [email, setEmail] = useState("");
 
   const navigate = useNavigate();
 
@@ -13,15 +13,21 @@ const PostData = () => {
     e.preventDefault();
     const formdata = {
       name,
-      age,
+      email,
     };
 
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_API}/addstudent`,
-        formdata
+        `${process.env.REACT_APP_API}/addStudent`,
+        formdata,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*", // Or the specific origin of your React app
+          },
+        }
       );
-      if (res.data.success) {
+      if (res.data) {
         navigate("/getdata");
       }
       console.log(res.data.message);
@@ -45,13 +51,13 @@ const PostData = () => {
             />
           </div>
           <div className="input-box">
-            Age:{" "}
+            Email:{" "}
             <input
-              type="number"
+              type="text"
               placeholder="Enter your email"
               required
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           {/* <div className="input-box">

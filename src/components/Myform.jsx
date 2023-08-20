@@ -10,12 +10,13 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  age: Yup.number()
+  Username: Yup.string().required("Name is required"),
+  Email: Yup.string()
     .typeError("emaile must be a number")
-    .required("Age is required"),
-
-  // calendarDate: Yup.date().nullable().required("Calendar date is required"),
+    .required("age is required"),
+  Address: Yup.string()
+    .typeError("Address is need")
+    .required("Address is required"),
 });
 
 const PostData = () => {
@@ -26,12 +27,20 @@ const PostData = () => {
       // Your API endpoint goes here
       console.table(values);
       const res = await axios.post(
-        `${process.env.REACT_APP_API}/addstudent`,
+        `${process.env.REACT_APP_API}/api/person/addPerson`,
         values
+        // {
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     "Access-Control-Allow-Origin": "*", // Or the specific origin of your React app
+        //   },
+        // }
       );
-      console.log(res);
-      if (res.data.success) {
+      console.log(res.data);
+      if (res.data) {
         navigate("/getdata");
+      } else {
+        navigate("/postdata");
       }
       // Handle success here, you can redirect to another page if needed
     } catch (error) {
@@ -45,8 +54,9 @@ const PostData = () => {
       <div className="text-center">
         <Formik
           initialValues={{
-            name: "",
-            age: 0,
+            Username: "",
+            Email: "",
+            Address: "",
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -54,13 +64,26 @@ const PostData = () => {
           <Form>
             <div className="input-box">
               Name:{" "}
-              <Field type="text" name="name" placeholder="Enter your name" />
-              <ErrorMessage name="name" component="div" color="red" />
+              <Field
+                type="text"
+                name="Username"
+                placeholder="Enter your name"
+              />
+              <ErrorMessage name="Username" component="div" color="red" />
             </div>
             <div className="input-box">
-              Age:{" "}
-              <Field type="number" name="age" placeholder="Enter your price" />
-              <ErrorMessage name="age" component="div" />
+              Email:{" "}
+              <Field type="text" name="Email" placeholder="Enter your price" />
+              <ErrorMessage name="Email" component="div" />
+            </div>
+            <div className="input-box">
+              Address:{" "}
+              <Field
+                type="text"
+                name="Address"
+                placeholder="Enter your price"
+              />
+              <ErrorMessage name="Address" component="div" />
             </div>
 
             <div className="input-box button">
